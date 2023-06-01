@@ -9,8 +9,16 @@ export class ApiService {
 
   async createUser(user) {
     try {
-      console.log(user.phone_number.length);
-      if (!/^\d+$/.test(user.phone_number) || user.phone_number.length < 10)
+      if (!user?.name || !user?.email || !user?.phone_number || !user?.dob)
+        throw new Error('Please fill all the fields');
+
+      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(user?.email))
+        throw new Error('Invalid Email!');
+      if (
+        !/^\d+$/.test(user.phone_number) ||
+        user.phone_number.length < 10 ||
+        user.phone_number.length > 10
+      )
         throw new Error('Invalid phone number!');
 
       const res: any = new this.databaseService.userModal(user).save();
